@@ -75,7 +75,7 @@ type Row = Block[]; type Page = Row[];
 - **块组合** `buildBlock`：`model` 先入；`strokeSteps > 0 且 strokeCount != null` 时入 `min(strokeSteps, strokeCount)` 个 `step`；**无笔顺数据的汉字（`strokeCount == null && isCjk`）不生成分解格也不生成描红格**（避免误教），只留例字与空格；最后 `slice(0, perLine)` 兜底，保证块不超一行。
 - **贪心分页** `paginate`：逐字取块，若当前行已有内容且 `used + cells.length > perLine` 就换行，再按 `lines` 切页；空内容也返回一页空白字帖。
 - **渲染单位制**（`src/components/paint.tsx`）：`INFO_H = 20`、`ROW_H = 100 + INFO_H = 120`、`ROW_FACTOR = ROW_H / 100 = 1.2`；1 unit = `cellMm/100` mm，即每格 100×100 units + 上方 20 units 信息带。预览、打印、导出共用 `RowContent`，所见即所得。
-- **字形变换** `glyphTransform(cx, cy) = translate(cx cy) scale(0.092) translate(-512 -450) scale(1 -1) translate(0 -900)`，把 hanzi-writer 的 1024 em box（y 向上）映射到格中心；笔画宽 `STROKE_W = 58`、描红 `TRACE_W = 62`。
+- **字形变换** `glyphTransform(cx, cy) = translate(cx cy) scale(0.092) translate(-512 -512) scale(1 -1) translate(0 -900)`，把 hanzi-writer 的 1024 em box（y 向上，中心 (512, 388)）映射到格中心；笔画宽 `STROKE_W = 58`、描红 `TRACE_W = 62`。
 - **字形回退**：有笔顺数据用 SVG path；无数据的汉字/字母用字体 `text`（汉字 82、字母数字 64），并额外标注红色「无笔顺数据」。
 - **导出**：`pageSvgMarkup` 用 `renderToStaticMarkup` 拼整页 SVG（`width/height` 用 mm、`viewBox` 用 px，`PX_MM = 96/25.4`）；PNG 走 `Image` + `canvas.drawImage`，倍率 4（A4 → 约 3175×4490 px）。
 - **拼音**：`readingsOf` 调 `pinyin(ch, { multiple: true, type: 'array' })` 去重后缓存到 Map；`pinyinResolver` 按 `pinyinChoice[char] ?? 0` 取读音。
