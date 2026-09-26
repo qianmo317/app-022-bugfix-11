@@ -25,10 +25,10 @@ const SELECT_COLOR = '#4a90d9';
 
 const GLYPH_K = 0.092;
 
-/** 字形到单元格的变换。 */
+/** 字形到单元格的变换。hanzi-writer 数据为 1024 em box、y 轴向上，须翻转为 y 向下并把 em box 居中到格中心。 */
 export function glyphTransform(cx: number, cy: number): string {
   const k = GLYPH_K;
-  return `translate(${cx} ${cy}) scale(${k}) translate(-512 -450)`;
+  return `translate(${cx} ${cy}) scale(${k}) translate(-512 -512) scale(1 -1) translate(0 -900)`;
 }
 
 /** 网格底（田/米/回宫/方/横线/四线格） */
@@ -119,7 +119,7 @@ export function GlyphAt({
             key={s.order}
             d={s.path}
             fill="none"
-            stroke={upto == null || i === upto - 1 ? STEP_CURRENT_COLOR : STEP_DONE_COLOR}
+            stroke={upto == null ? color : i === upto - 1 ? STEP_CURRENT_COLOR : STEP_DONE_COLOR}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -129,7 +129,7 @@ export function GlyphAt({
       </g>
     );
   }
-  const size = isCjk(ch) ? 64 : 82;
+  const size = isCjk(ch) ? 82 : 64;
   return (
     <text
       x={cx}
